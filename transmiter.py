@@ -3,6 +3,7 @@ from operator import le
 from textwrap import wrap
 from json import dumps, loads
 import socket,threading
+from hashlib import md5
 
 # sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
@@ -41,7 +42,7 @@ class Transmissor(threading.Thread):
         for m in msg:
             while True:
                 try:
-                    sd_data = dumps({"ack": ack, "msg": m}).encode("utf8")
+                    sd_data = dumps({"ack": ack, "msg": m, "checksum": md5(m.encode("utf8")).hexdigest()}).encode("utf8")
 
                     self.sock.sendto(sd_data, ('127.0.0.1', 8080))
                     data, addr = self.sock.recvfrom(1028)
@@ -50,9 +51,13 @@ class Transmissor(threading.Thread):
                     if json["ack"] != ack:
                         print("ACK conflitante. Reenviando...")
                         continue
+                        
+                    if json["checksum"] != md5("FINE".encode("utf8")).hexdigest():
+                        print("PACOTE CORROMPIDO. Reenviando")
+                        continue
 
                     print("ACK Recebido. Enviando Prox. Pacote")
-                except:
+                except socket.timeout:
                     print("Timeout. Reenviando...")
                     continue
                 
