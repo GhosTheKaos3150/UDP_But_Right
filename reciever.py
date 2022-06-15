@@ -62,9 +62,9 @@ class Receptor(threading.Thread):
             self.prev_ack = json["ack"]
 
             if self.sml_lose and randint(1, 100) <= 75:
-                res = dumps({"ack": json["ack"], "checksum": md5("FINE".encode("utf8")).hexdigest()}).encode("utf-8")
-            else:
                 res = dumps({"ack": json["ack"], "checksum": md5("F1N3".encode("utf8")).hexdigest()}).encode("utf-8")
+            else:
+                res = dumps({"ack": json["ack"], "checksum": md5("FINE".encode("utf8")).hexdigest()}).encode("utf-8")
 
             if self.sml_lose and randint(1, 100) <= 75:
                 # Pacote se perdeu (95% de Perda)
