@@ -1,5 +1,4 @@
-from dataclasses import replace
-from operator import le
+import sys
 from textwrap import wrap
 from json import dumps, loads
 import socket,threading
@@ -97,6 +96,11 @@ class Transmissor(threading.Thread):
     
 
 if __name__ == "__main__":
-    trns = Transmissor(str(open("./src/Lorem Ipsum.txt", "r").read()))
+    if len(sys.argv) > 1:
+        file = sys.argv[1].capitalize()
+    else:
+        file = "Lorem Ipsum.txt"
+
+    trns = Transmissor(str(open(f"./src/{file}", "r").read()))
     trns.run()
     
