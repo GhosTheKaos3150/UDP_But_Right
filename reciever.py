@@ -20,7 +20,11 @@ class Receptor(threading.Thread):
         inc_data = ''
 
         while True:
-            data, addr = self.sock.recvfrom(1028)
+            try:
+                data, addr = self.sock.recvfrom(1028)
+            except:
+                print("Conexão Encerrada. Continuando...")
+                continue
 
             if self.sml_lose and randint(1, 100) <= 75:
                 # Pacote se perdeu (95% de Perda)
@@ -34,6 +38,7 @@ class Receptor(threading.Thread):
                 if json["ack"] == -1:
                     print("ACK -1 Recebido. Encerrando...")
                     inc_data = inc_data.replace("_", " ")
+                    inc_data = inc_data.replace("$&", "\n")
 
                     fac = 0
                     while True:

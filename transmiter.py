@@ -22,6 +22,7 @@ class Transmissor(threading.Thread):
         self.sock.settimeout(0.01)
 
         self.msg = msg.replace(" ", "_")
+        self.msg = msg.replace("\n", "$&")
         print("Transmissor Iniciado".upper())
 
     def run(self) -> None:
